@@ -1038,6 +1038,22 @@ const CONFIG = {
           body: JSON.stringify(payload)
         });
         if(!res.ok) throw new Error('Network response was not ok');
+        let result;
+        try {
+          result = await res.json();
+        } catch (parseErr) {
+          throw new Error('Unexpected response from RSVP endpoint (not JSON). Check the Apps Script deployment.');
+        }
+        if(result.status === 'duplicate'){
+          dupBanner.style.display = 'block';
+          formStatus.textContent = '';
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Submit RSVP';
+          return;
+        }
+        if(result.status !== 'success'){
+          throw new Error(result.message || 'RSVP endpoint reported an error.');
+        }
       } else {
         // Demo mode — simulate latency, do not pretend data was saved to a sheet
         await new Promise(r=>setTimeout(r, 700));
