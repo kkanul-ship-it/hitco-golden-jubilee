@@ -835,16 +835,20 @@ const CONFIG = {
   // Leave empty ("") to keep the "View Location" button disabled.
   GOOGLE_MAPS_URL: "https://www.google.com/maps/search/?api=1&query=Park+Ascent+Hotel+Sector+62+Noida",
 
-  // Event date and venue are confirmed. Time is not yet — leave blank
-  // until Hitco Group shares it; the page will show "To be announced".
+  // Event date, time and venue are confirmed.
   EVENT_DATE_DISPLAY: "10th October 2026",
-  EVENT_TIME: "",
+  EVENT_TIME: "5:00 PM onwards",
   EVENT_VENUE: "Park Ascent Hotel",
   EVENT_ADDRESS: "Sector 62, Noida (near Sector 62 Metro Station)",
 
   // For "Add to Calendar" — ISO date the event starts, used only once
   // EVENT_TIME above is also filled in. Format: YYYYMMDD
   EVENT_DATE_ISO: "20261010",
+
+  // For "Add to Calendar" — exact start/end used once EVENT_TIME is set.
+  // Format: YYYYMMDDTHHMMSS (local time)
+  EVENT_START_ISO: "20261010T170000",
+  EVENT_END_ISO: "20261010T230000",
 
   WEBSITE_URL: "https://hitcogroup.in",
   LINKEDIN_URL: "https://in.linkedin.com/company/hitcoelectricals",
@@ -1097,11 +1101,12 @@ const CONFIG = {
   const calBtn = document.getElementById('calBtn');
   if(CONFIG.EVENT_TIME && CONFIG.EVENT_VENUE){
     calBtn.addEventListener('click', ()=>{
-      // Basic Google Calendar link — refine start/end time formatting once
-      // exact event time is confirmed.
       const text = encodeURIComponent('Hitco Group 50th Golden Jubilee Celebration');
       const loc = encodeURIComponent(CONFIG.EVENT_VENUE + ', ' + (CONFIG.EVENT_ADDRESS||''));
-      const url = 'https://calendar.google.com/calendar/render?action=TEMPLATE&text='+text+'&dates='+CONFIG.EVENT_DATE_ISO+'/'+CONFIG.EVENT_DATE_ISO+'&location='+loc;
+      const dates = (CONFIG.EVENT_START_ISO && CONFIG.EVENT_END_ISO)
+        ? CONFIG.EVENT_START_ISO + '/' + CONFIG.EVENT_END_ISO
+        : CONFIG.EVENT_DATE_ISO + '/' + CONFIG.EVENT_DATE_ISO;
+      const url = 'https://calendar.google.com/calendar/render?action=TEMPLATE&text='+text+'&dates='+dates+'&location='+loc;
       window.open(url, '_blank', 'noopener');
     });
   } else {
